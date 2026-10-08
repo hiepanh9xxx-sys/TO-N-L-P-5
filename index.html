@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#100d24">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hành Trình Tìm Bố Mẹ – Toán lớp 5</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#100d24;--panel:#1d1a3a;--ink:#f4efd8;--star:#ffd23f;--zom:#7bc043;--bad:#e5383b;--dim:#5b5780;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:24px/1.2 'VT323','Courier New',monospace}
+.wrap{max-width:960px;margin:0 auto;padding:8px}
+.hud{flex-wrap:wrap;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:30px;padding:4px 2px}
+#hH span{color:var(--bad);margin-right:4px}#hH span.lost{color:var(--dim)}
+#hS{letter-spacing:1px;color:var(--star);text-align:center}#hS span{color:var(--dim)}#hS span.g{color:var(--star)}#hS span.cur{color:#fff}
+canvas{display:block;width:100%;height:auto;image-rendering:pixelated;border:4px solid #3b3363;box-shadow:6px 6px 0 #000;background:#000}
+.dock{margin-top:12px;min-height:84px;background:var(--panel);border:4px solid var(--ink);box-shadow:6px 6px 0 #000;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;font-size:28px}
+button{font:inherit;cursor:pointer}
+.px{font-size:26px;background:var(--star);color:#1a1530;border:0;padding:8px 18px;box-shadow:4px 4px 0 #000;flex:none}
+.px:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #000}
+.px.sm{padding:2px 12px}
+button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.modal{position:fixed;inset:0;background:rgba(8,6,20,.8);display:flex;align-items:center;justify-content:center;padding:12px;z-index:5}
+.hidden{display:none}
+.card{background:var(--panel);border:4px solid var(--star);box-shadow:8px 8px 0 #000;padding:18px 20px;max-width:640px;width:100%;max-height:92vh;overflow:auto}
+#mHead{color:var(--star);font-size:26px}
+#mQ{font-size:32px;line-height:1.15;margin:10px 0 16px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{background:#2c2859;color:var(--ink);border:3px solid #6c64a8;font-size:30px;padding:12px 8px;box-shadow:3px 3px 0 #000}
+.opt:hover{background:#3a3578}.opt.ok{background:#2f5a1f;border-color:var(--zom)}.opt.no{background:#5a1f26;border-color:var(--bad)}
+.inrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:30px}
+#ans{font:inherit;font-size:32px;width:5.5em;padding:6px 8px;background:#0f0c22;color:var(--ink);border:3px solid var(--star)}
+#mFb{margin-top:14px;font-size:28px}#mFb .g{color:var(--zom)}
+.fr{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .2em;line-height:.95;font-size:.9em}
+.fr i{font-style:normal;padding:0 .25em}.fr i:first-child{border-bottom:2px solid currentColor}
+.guide{background:#0f0c22;border:3px solid var(--zom);padding:8px 12px;margin:10px 0;font-size:28px}.guide b{color:var(--star)}
+.cr{display:flex;gap:18px;flex-wrap:wrap}.cl{flex:none}#pv{display:block;width:144px;height:180px;image-rendering:pixelated;border:4px solid #3b3363;background:#2e2757}
+#cname{font:inherit;font-size:28px;width:5.5em;padding:2px 8px;background:#0f0c22;color:var(--ink);border:3px solid var(--star)}
+#opts{flex:1;min-width:240px}.grp{margin:2px 0 8px}.grp .lb{color:var(--star);font-size:24px}
+.chips button{font-size:22px;background:#2c2859;color:var(--ink);border:3px solid #6c64a8;padding:1px 8px;margin:2px 4px 2px 0;box-shadow:2px 2px 0 #000}
+.chips button.sel{border-color:#fff;background:#4a3f8a}.chips button.sw{width:36px;height:30px;padding:0}.chips button.sw.sel{outline:3px solid #fff}
+h1{margin:0 0 6px;font-size:46px;color:var(--star);line-height:1}
+.card p{margin:8px 0}
+#nm{font:inherit;font-size:30px;width:6em;padding:4px 8px;background:#0f0c22;color:var(--ink);border:3px solid var(--star)}
+@media(max-width:560px){body{font-size:21px}.opts{grid-template-columns:1fr}.hud{font-size:24px}.dock{font-size:23px;flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hud"><div id="hH" aria-label="Số tim còn lại"></div><div id="hS" aria-label="Vật dụng đã nhận"></div><button class="px sm" id="snd" aria-label="Bật tắt âm thanh">♪</button></div>
+  <canvas id="cv" width="800" height="400" role="img" aria-label="Cô bé chạy qua phố đầy zombie để tìm bố mẹ"></canvas>
+  <div class="dock"><div id="sayT"></div><button class="px" id="sayB" hidden></button></div>
+</div>
+
+<div class="modal" id="start"><div class="card">
+  <h1>Hành Trình Tìm Bố Mẹ</h1>
+  <p>Trò chơi Toán lớp 5: Số thập phân, phân số, tỉ số phần trăm, hình học, vận tốc, thể tích.</p>
+  <p>Mỗi chặng có một con zombie chắn đường. Trả lời <b style="color:var(--zom)">đúng</b>: nhận một món ăn hoặc đồ dùng Việt Nam, rồi <b>chọn vật dụng để đánh bay zombie</b>. Trả lời <b style="color:var(--bad)">sai</b>: zombie cắn, mất 1 ♥ (có 3 ♥) và vật dụng của chặng đó bị cướp mất.</p>
+  <button class="px" id="go0">Tạo nhân vật</button>
+</div></div>
+
+<div class="modal hidden" id="creator"><div class="card" style="max-width:780px">
+  <h1 style="font-size:38px">Tạo nhân vật</h1>
+  <div class="cr"><div class="cl"><canvas id="pv" width="144" height="180"></canvas>
+    <p>Tên: <input id="cname" value="Mai" maxlength="12" aria-label="Tên cô bé"></p>
+    <button class="px sm" id="rnd">Ngẫu nhiên</button></div>
+  <div id="opts"></div></div>
+  <p><button class="px" id="go1">Bắt đầu hành trình</button></p>
+</div></div>
+<div class="modal hidden" id="modal"><div class="card" role="dialog" aria-live="polite">
+  <div id="mHead"></div><div id="mQ"></div><div id="mA"></div><div id="mFb"></div>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a,pick=a=>a[R(0,a.length-1)],shuf=a=>a.slice().sort(()=>Math.random()-.5);
+const gcd=(a,b)=>b?gcd(b,a%b):a;
+const fx=n=>String(+(+n).toFixed(4)).replace('.',','),f1=x=>(x/10).toFixed(1).replace('.',','),f2=x=>(x/100).toFixed(2).replace('.',',');
+const pv=s=>parseFloat(s.replace(',','.'));
+const fr=s=>s.replace(/(\d+)\/(\d+)/g,'<span class="fr"><i>$1</i><i>$2</i></span>');
+const frs=(n,d)=>{const g=gcd(n,d);return d/g==1?''+n/g:(n/g)+'/'+(d/g)};
+
+/* ===== CÂU HỎI (theo chương trình Toán 5 – GDPT 2018) ===== */
+const NAMES=['Hàng của số thập phân','So sánh số thập phân','Cộng, trừ số thập phân','Nhân, chia số thập phân','Cộng, trừ phân số','Tỉ số phần trăm','Hình tam giác, hình thang','Hình tròn','Vận tốc, quãng đường, thời gian','Thể tích hình hộp chữ nhật'];
+const IT=[
+{n:'Bánh mì',e:'🥖',a:'swing',w:'BỐP!',m:'Quất bánh mì cứng như gậy!'},
+{n:'Chảo',e:'🍳',a:'swing',w:'CHOANG!',m:'Cô bé vung chảo!'},
+{n:'Cây chổi',e:'🧹',a:'swing',w:'BỘP!',m:'Quét sạch zombie!'},
+{n:'Dép tông',e:'🩴',a:'swing',w:'CHÁT!',m:'Cú đập dép tông huyền thoại!'},
+{n:'Quả dừa',e:'🥥',a:'throw',w:'BỊCH!',m:'Ném dừa trúng đầu!'},
+{n:'Ớt cay',e:'🌶️',a:'throw',w:'CAY QUÁ!',m:'Zombie cay xé lưỡi!'},
+{n:'Tô phở nóng',e:'🍜',a:'throw',w:'NÓNG!',m:'Hất tô phở nóng hổi!'},
+{n:'Nước mắm',e:'🍾',a:'throw',w:'THỐI!',m:'Mùi nước mắm làm zombie ngất!'},
+{n:'Vỏ chuối',e:'🍌',a:'throw',w:'TRƯỢT!',m:'Zombie trượt vỏ chuối!'},
+{n:'Bánh chưng',e:'🟩',a:'throw',w:'ẦM!',m:'Ném bánh chưng cực nặng!'}],
+FIST={n:'Nắm đấm',e:'✊',a:'swing',w:'BỐP!',m:'Cô bé tung nắm đấm!'};
+const C=(q,opts,ans,exp)=>({k:'c',q,opts:shuf(opts),ans,exp}),I=(q,num,unit,exp)=>({k:'i',q,num,unit,exp});
+const GEN=[
+()=>{const d=shuf([1,2,3,4,5,6,7,8,9]),s=`${d[0]}${d[1]},${d[2]}${d[3]}${d[4]}`,k=R(0,2),N=['phần mười','phần trăm','phần nghìn'];
+ return C(`Trong số ${s}, chữ số ${d[2+k]} thuộc hàng nào?`,[...N,'hàng chục'],N[k],`Sau dấu phẩy lần lượt là hàng phần mười, phần trăm, phần nghìn. Chữ số ${d[2+k]} đứng thứ ${k+1} sau dấu phẩy nên thuộc hàng ${N[k]}.`)},
+()=>{const n=R(3,9),seen=new Set(),a=[];while(a.length<4){const L=R(1,3);let d='';for(let i=0;i<L;i++)d+=R(i==L-1?1:0,9);const s=pick([n,n,n+1])+','+d;if(!seen.has(pv(s))){seen.add(pv(s));a.push(s)}}
+ const so=a.slice().sort((x,y)=>pv(x)-pv(y)),mx=Math.random()<.5;
+ return C(`Số nào ${mx?'lớn':'bé'} nhất trong các số: ${a.join('; ')}?`,a,mx?so[3]:so[0],`So sánh phần nguyên trước, nếu bằng nhau thì so sánh hàng phần mười, phần trăm, phần nghìn. Xếp từ bé đến lớn: ${so.join(' < ')}.`)},
+()=>{let a=R(1000,9000),b=R(1000,6000);if(Math.random()<.5)return I(`Đoạn đường đầu dài ${f2(a)} km, đoạn sau dài ${f2(b)} km. Cả hai đoạn dài bao nhiêu ki-lô-mét?`,(a+b)/100,'km',`Đặt tính thẳng hàng dấu phẩy rồi cộng: ${f2(a)} + ${f2(b)} = ${fx((a+b)/100)} (km).`);
+ return I(`Quãng đường dài ${f2(a)} km, cô bé đã chạy được ${f2(b)} km. Còn lại bao nhiêu ki-lô-mét?`,(a-b)/100,'km',`Đặt tính thẳng hàng dấu phẩy rồi trừ: ${f2(a)} − ${f2(b)} = ${fx((a-b)/100)} (km).`)},
+()=>{const t=R(0,2);if(t==0){const A=R(12,99),m=R(2,9);return I(`Tính: ${f1(A)} × ${m} = ?`,A*m/10,'',`Nhân như số tự nhiên: ${A} × ${m} = ${A*m}, rồi đặt dấu phẩy ở kết quả sao cho có 1 chữ số ở phần thập phân: ${fx(A*m/10)}.`)}
+ if(t==1){const q=R(11,99),d=R(2,9);return I(`Tính: ${f1(q*d)} : ${d} = ?`,q/10,'',`Chia như số tự nhiên: ${q*d} : ${d} = ${q}, đặt dấu phẩy ở thương để có 1 chữ số thập phân: ${fx(q/10)}.`)}
+ const x=R(101,999),p=pick([10,100]);return I(`Tính: ${f2(x)} × ${p} = ?`,x*p/100,'',`Nhân với ${p}: chuyển dấu phẩy sang bên phải ${p==10?1:2} chữ số. Kết quả: ${fx(x*p/100)}.`)},
+()=>{const b=pick([2,3,4,5]),k=pick([2,3]),d=b*k,a=R(1,b-1),c=R(1,d-1),sub=a*k>c&&Math.random()<.5,n=a*k+(sub?-c:c),ans=frs(n,d),S=new Set();
+ [frs(a+c,b+d),frs(a*k+(sub?c:-c),d),frs(n+1,d),frs(n,d+k),frs(Math.abs(a-c)||1,d)].forEach(x=>{if(x!=ans&&!/^-|^0/.test(x))S.add(x)});
+ while(S.size<3){const x=frs(R(1,d),d+R(0,2));if(x!=ans&&x!='0')S.add(x)}
+ return C(`Tính: ${a}/${b} ${sub?'−':'+'} ${c}/${d} = ?`,[ans,...[...S].slice(0,3)],ans,`Quy đồng mẫu số: ${a}/${b} = ${a*k}/${d}. Rồi ${sub?'trừ':'cộng'} tử số: ${a*k} ${sub?'−':'+'} ${c} = ${n}. Kết quả ${n}/${d}${ans!=n+'/'+d?' = '+ans:''}.`)},
+()=>{if(Math.random()<.5){const p=pick([10,20,25,40,50,5]),N=R(2,15)*20;return I(`Một con đường dài ${N} m. Cô bé đã chạy được ${p}% con đường. Hỏi cô bé đã chạy bao nhiêu mét?`,N*p/100,'m',`Tìm ${p}% của ${N}: ${N} × ${p} : 100 = ${fx(N*p/100)} (m).`)}
+ const T=pick([20,25,50]),p=R(1,T-1);return I(`Lớp 5A có ${T} học sinh, trong đó có ${p} bạn nữ. Số bạn nữ chiếm bao nhiêu phần trăm số học sinh cả lớp?`,p*100/T,'%',`Tỉ số của số nữ và cả lớp là ${p} : ${T} = ${fx(p/T)} = ${fx(p*100/T)}%.`)},
+()=>{if(Math.random()<.5){const a=R(4,20);let h=R(4,20);if(a*h%2)h++;return I(`Mảnh vườn hình tam giác có đáy ${a} m, chiều cao ${h} m. Diện tích mảnh vườn là bao nhiêu mét vuông?`,a*h/2,'m²',`S = đáy × chiều cao : 2 = ${a} × ${h} : 2 = ${a*h/2} (m²).`)}
+ const a=R(3,10),b=a+R(1,6),h=2*R(2,6);return I(`Một hình thang có đáy lớn ${b} cm, đáy bé ${a} cm, chiều cao ${h} cm. Tính diện tích hình thang.`,(a+b)*h/2,'cm²',`S = (đáy lớn + đáy bé) × chiều cao : 2 = (${b} + ${a}) × ${h} : 2 = ${(a+b)*h/2} (cm²).`)},
+()=>{if(Math.random()<.5){const d=R(2,20);return I(`Bánh xe hình tròn có đường kính ${d} cm. Tính chu vi bánh xe (lấy π = 3,14).`,d*314/100,'cm',`C = đường kính × 3,14 = ${d} × 3,14 = ${fx(d*3.14)} (cm).`)}
+ const r=R(2,10);return I(`Hình tròn có bán kính ${r} cm. Tính diện tích hình tròn (lấy π = 3,14).`,r*r*314/100,'cm²',`S = bán kính × bán kính × 3,14 = ${r} × ${r} × 3,14 = ${fx(r*r*3.14)} (cm²).`)},
+()=>{const v=pick([20,30,40,60]),t=pick([1.5,2,2.5,3,4]),s=v*t,k=R(0,2);
+ if(k==0)return I(`Một xe máy đi với vận tốc ${v} km/giờ trong ${fx(t)} giờ. Quãng đường xe đi được là bao nhiêu ki-lô-mét?`,s,'km',`s = v × t = ${v} × ${fx(t)} = ${s} (km).`);
+ if(k==1)return I(`Quãng đường dài ${s} km, xe đi với vận tốc ${v} km/giờ. Hỏi xe đi hết bao nhiêu giờ?`,t,'giờ',`t = s : v = ${s} : ${v} = ${fx(t)} (giờ).`);
+ return I(`Một ô tô đi quãng đường ${s} km hết ${fx(t)} giờ. Tính vận tốc của ô tô (km/giờ).`,v,'km/giờ',`v = s : t = ${s} : ${fx(t)} = ${v} (km/giờ).`)},
+()=>{const k=R(0,2);if(k==0){const a=R(2,9),b=R(2,9),c=R(2,9);return I(`Hình hộp chữ nhật có chiều dài ${a} cm, chiều rộng ${b} cm, chiều cao ${c} cm. Tính thể tích hình hộp.`,a*b*c,'cm³',`V = dài × rộng × cao = ${a} × ${b} × ${c} = ${a*b*c} (cm³).`)}
+ if(k==1){const a=R(2,9);return I(`Hình lập phương có cạnh ${a} dm. Tính thể tích hình lập phương.`,a**3,'dm³',`V = cạnh × cạnh × cạnh = ${a} × ${a} × ${a} = ${a**3} (dm³).`)}
+ const x=pick([1.5,2,2.5,3,4.2]);return I(`Đổi: ${fx(x)} dm³ = ... cm³`,x*1000,'cm³',`1 dm³ = 1000 cm³ nên ${fx(x)} dm³ = ${fx(x)} × 1000 = ${fx(x*1000)} cm³.`)}
+];
+
+/* ===== SPRITE PIXEL ===== */
+const N=a=>a.map(s=>s.padEnd(12,'.'));
+const LEG=[N(["...ss..ss...","...ss..ss...","..kkk..kkk.."]),N(["..ss....ss..","..ss....ss..",".kkk....kkk."])];
+const HC=['#8a5a2b','#222222','#e0b84a','#c0502a','#8e5bd9'],SK=['#ffd1a6','#e8b48a','#c68642'],OC=['#ff6b8b','#3a86ff','#ffd23f','#2ec4b6','#9b5de5','#e5383b'];
+const TOP=[["...","hhhhhh","..."],["..h","hhhhhh","h.."],[".hh","hhhhhh","hh."]];
+const HAIR=[
+[...TOP,[".hh","ssssss","hh."],[".hh","ssssss","hh."],["..h","ssssss","h.."],["...",".ssss.","..."]],
+[...TOP,[".hh","ssssss","hh."],[".hh","ssssss","hh."],[".hh","ssssss","hh."],[".hh","hssssh","hh."]],
+[...TOP,[".hs","ssssss","sh."],["hhs","ssssss","shh"],["hh.","ssssss",".hh"],["hh.",".ssss.",".hh"]],
+[["hh.","hhhhhh",".hh"],["hh.","hhhhhh",".hh"],[".hh","hhhhhh","hh."],[".hs","ssssss","sh."],["..s","ssssss","s.."],["..s","ssssss","s.."],["...",".ssss.","..."]]];
+const EY=['sesses','eessee','geggeg'],NS=['sssnss','snnnns','ssnnss'],MO=['smmmms','ssmmss','ssooss'];
+const OUT=[
+{rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..rrrrrrrr..",".rrrrrrrrrr."],leg:'s',p:'#000'},
+{rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..pppppppp..","..ppp..ppp.."],leg:'p',p:'#2b3a67'},
+{rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..rrrrrrrr..","..rrr..rrr.."],leg:'p',p:'#f4efd8'}];
+const dk=h=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*.82).toString(16).padStart(2,'0')).join('');
+const PL={hair:0,hc:0,skin:0,eyes:0,nose:0,mouth:1,outfit:0,oc:0},DADC={hair:0,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:1,oc:1},MOMC={hair:1,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:2,oc:4};
+const BC={};
+function build(c,f){const key=[c.hair,c.hc,c.skin,c.eyes,c.nose,c.mouth,c.outfit,c.oc,f].join();if(BC[key])return BC[key];
+ const rows=HAIR[c.hair].map(x=>x.join('').split(''));
+ [EY[c.eyes],NS[c.nose],MO[c.mouth]].forEach((M,i)=>{for(let k=0;k<6;k++)rows[3+i][3+k]=M[k]});
+ const o=OUT[c.outfit],bd=o.rows.map(x=>x.split(''));
+ if(c.hair==1){bd[0][1]='h';bd[0][10]='h'}if(c.hair==2){bd[0][0]='h';bd[0][11]='h'}
+ const lg=LEG[f].map(x=>x.replace(/s/g,o.leg));
+ return BC[key]={rows:[...rows,...bd].map(x=>x.join('')).concat(lg),pal:{h:HC[c.hc],s:SK[c.skin],e:'#222',m:'#c0392b',o:'#5a1020',n:c.nose==2?'#ff7a7a':dk(SK[c.skin]),g:'#3a3a8a',r:OC[c.oc],p:o.p,k:'#e9e9f2'}}}
+const ZOM=N(["...GGGGGG...","..gggggggg..","..geggggeg..","..gggggggg..","..gdddddgg..","....gggg....","gggbbbbbbggg","g.gbbbbbbg.g","g..bbbbbb..g","...bbbbbb...","...bbbbbb...","...bb..bb...","...gg..gg...","...gg..gg...","..GGG..GGG.."]);
+const ZP={G:'#3f7d20',g:'#7bc043',e:'#e5383b',d:'#2b1a1a',b:'#5c6b8a'},DK={G:'#2a1d3d',g:'#3d2a58',e:'#e5383b',d:'#000',b:'#2a1d3d'};
+const W=800,H=400,cv=$('#cv');let cx=cv.getContext('2d');cx.imageSmoothingEnabled=false;
+function spr(rows,pal,x,y,s,flip){x=Math.round(x);y=Math.round(y);rows.forEach((row,j)=>{for(let i=0;i<12;i++){const ch=row[i];if(ch!=='.'){cx.fillStyle=pal[ch];cx.fillRect(x+(flip?11-i:i)*s,y+j*s,s,s)}}})}
+const r=(x,y,w,h,c)=>{cx.fillStyle=c;cx.fillRect(x,y,w,h)};
+const tx=(s,x,y,sz,c,al)=>{cx.font=sz+'px VT323, monospace';cx.fillStyle=c;cx.textAlign=al||'left';cx.fillText(s,x,y)};
+const girl=(x,y,s,ch,f,flip)=>{const o=build(ch,f);spr(o.rows,o.pal,x,y,s,flip)};
+
+/* ===== THẾ GIỚI ===== */
+const CPX=i=>420+i*430,GOAL=CPX(9)+620,WW=GOAL+420,GY=335,SC=5;
+const BG=(()=>{let s=7;const q=()=>(s=s*16807%2147483647)/2147483647,a=[];let x=0;while(x<WW*.5+W){const w=60+q()*90|0;a.push({x,w,h:100+q()*170|0});x+=w+q()*30|0}return a})();
+const DZ=Array.from({length:12},(_,i)=>({x:CPX(i%10)+160+(i*53%120),f:i%2}));
+let S,scn=0,tw,mute=false,AC;
+function newGame(){S={mode:'story',cp:0,gx:90,tgt:0,hearts:3,stars:0,res:[],wrong:false,t:0,lunge:0,flash:0,jump:0,pops:[],wt:0,cam:0,q:null,name:'Mai',lock:0,inv:[],zdead:[],hit:0};scn=0}
+
+function room(t,awake){
+ r(0,0,W,H,'#2e2757');r(0,310,W,90,'#4a3a63');r(0,306,W,6,'#3a2d52');for(let x=0;x<W;x+=100)r(x,312,3,88,'#3a2d52');
+ r(70,60,170,130,'#8a7fc0');r(80,70,150,110,'#14204f');r(152,70,6,110,'#8a7fc0');r(80,122,150,6,'#8a7fc0');r(100,85,22,22,'#f2e9b8');if(Math.sin(t*3)>0)r(190,90,4,4,'#fff');
+ r(330,70,80,100,'#ffd23f');r(338,78,64,84,'#ff6b8b');tx('★',370,140,56,'#ffd23f','center');
+ r(430,270,330,60,'#8a5a2b');r(430,240,20,90,'#6b4423');r(740,250,20,80,'#6b4423');r(450,248,290,30,'#dfe6ff');
+ if(!awake){r(455,230,64,28,'#fff');r(470,220,40,34,'#ffd1a6');r(466,214,48,14,'#8a5a2b');r(466,214,10,36,'#8a5a2b');r(480,236,8,3,'#222');r(494,236,8,3,'#222');
+  r(520,240,230,40,'#ff6b8b');[540,600,660].forEach(x=>r(x,240,10,40,'#e0486b'));const o=t*20%30;tx('Z',540,200-o,40,'#f2e9b8');tx('z',590,170-o,30,'#f2e9b8')}
+ else{r(520,252,230,22,'#ff6b8b');girl(250,GY-90,6,PL,0);r(150,110,260,64,'#f4efd8');r(150,110,260,6,'#1a1530');tx('Bố ơi! Mẹ ơi!',280,152,38,'#1a1530','center');tx('?',620,230,80,'#ffd23f','center')}
+}
+function door(t){
+ r(0,0,W,H,'#241d3d');r(0,310,W,90,'#3a2d52');r(300,60,200,260,'#6b4423');r(316,76,168,244,'#fff3b0');r(316,316,168,6,'#fff3b0');
+ for(let i=0;i<3;i++)spr(ZOM,DK,332+i*46+Math.sin(t*2+i)*4,271,3,i%2);
+ girl(140,GY-90,6,PL,0);r(110,70,100,60,'#f4efd8');tx('!',160,120,70,'#e5383b','center');
+}
+function world(t){
+ const cam=S.cam;['#0b0920','#150f33','#231a4a','#35275f'].forEach((c,i)=>r(0,i*75,W,75,c));
+ for(let k=0;k<40;k++){if(Math.sin(t*2+k)>-.5)r(k*97%W,k*53%200,3,3,'#fff')}
+ const mx=640-cam*.05;for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++)if(i*i+j*j<=26)r(mx+i*8,50+j*8,8,8,'#f2e9b8');
+ BG.forEach((b,bi)=>{const x=b.x-cam*.5;if(x+b.w<0||x>W)return;r(x,300-b.h,b.w,b.h,'#18123a');for(let i=8;i<b.w-14;i+=22)for(let j=14;j<b.h-20;j+=28)if((i*7+j*13+bi)%5==0&&!((i+j+bi)%11==0&&Math.sin(t*3+bi)>.6))r(x+i,300-b.h+j,10,12,'#ffd23f')});
+ r(0,300,W,100,'#241d3d');r(0,300,W,6,'#4a3f78');r(0,320,W,80,'#2f2750');for(let x=-(cam%80);x<W;x+=80)r(x,372,40,6,'#6c64a8');
+ const g=GOAL-cam;if(g<W+260){r(g-60,150,300,185,'#3a3470');r(g-70,128,320,26,'#e5383b');tx('TRẠM TRÚ ẨN',g+90,150,26,'#fff','center');r(g+30,GY-95,60,95,'#ffd23f');r(g+10,GY-110,100,6,'#fff3b0');[g+130,g+180].forEach(x=>r(x,200,34,34,'#ffd23f'))}
+ for(let i=0;i<10;i++){const x=CPX(i)-cam,v=S.res[i];if(x<-200||x>W+200)continue;r(x+96,GY-110,8,110,'#6b4423');r(x+60,GY-150,80,44,v=='g'?'#7bc043':v=='l'?'#8888aa':'#e8c14a');tx(v=='g'?'✓':v=='l'?'✕':i+1,x+100,GY-116,38,'#1a1530','center')}
+ DZ.forEach((z,i)=>{const x=z.x-cam;if(x>-80&&x<W+40)spr(ZOM,{...ZP,g:'#5e9a33'},x,GY-52+Math.sin(t*2+i)*2,4,z.f)});
+ for(let i=0;i<10;i++){if(S.zdead[i])continue;let zx=CPX(i)-(i==S.cp?S.lunge*70:0)-cam,zy=GY-75+Math.sin(t*3+i)*3,al=1;if(i==S.cp&&S.mode=='strike'&&S.t>.45){const k=S.t-.45;zx+=k*450;zy-=k*160-k*k*200;al=Math.max(0,1-k/.9)}if(zx<-80||zx>W+80)continue;cx.globalAlpha=al;spr(ZOM,ZP,zx,zy,SC,0);cx.globalAlpha=1}
+ const mv=S.mode=='walk';
+ girl(S.gx-cam,GY-75-S.jump+(mv?Math.abs(Math.sin(t*10))*-4:0),SC,PL,mv?Math.floor(t*8)%2:0);
+ if(S.mode=='strike'&&S.t<.45){const it=S.it,u=S.t/.45,hx=S.gx-cam+55,hy=GY-45,zx=CPX(S.cp)-cam+15;cx.save();if(it.a=='swing'){cx.translate(hx,hy);cx.rotate(-1.4+u*2.2);tx(it.e,0,-30,60,'#fff','center')}else{cx.translate(hx+(zx-hx)*u,hy-Math.sin(u*Math.PI)*70);cx.rotate(u*12);tx(it.e,0,18,50,'#fff','center')}cx.restore()}
+ if(S.mode=='win'){const e=Math.min(1,S.wt/1.6);girl(GOAL+100-e*110-cam,GY-90,6,DADC,0);girl(GOAL+150-e*120-cam,GY-90,6,MOMC,0);if(e>=1)for(let i=0;i<4;i++)tx('♥',GOAL-60-cam+i*35,GY-130-((t*40+i*25)%60),34,'#ff6b8b','center')}
+ S.pops.forEach(p=>{cx.globalAlpha=1-p.t/1.2;tx(p.txt,p.x-S.cam,GY-100-p.t*60,46,p.c,'center');cx.globalAlpha=1});
+ if(S.flash>0)r(0,0,W,H,`rgba(229,56,59,${S.flash*.5})`);
+}
+function car(t){
+ ['#2a1f4a','#7a3b6e','#e0735a','#ffb86b'].forEach((c,i)=>r(0,i*75,W,75,c));
+ for(let i=-6;i<=6;i++)for(let j=-6;j<=6;j++)if(i*i+j*j<=40)r(560+i*10,200+j*10,10,10,'#fff3b0');
+ [[540,90],[590,140],[640,110],[690,170],[740,120]].forEach(([x,h],k)=>{r(x,300-h,44,h,'#3a2a5e');for(let j=14;j<h-10;j+=24)r(x+8+(k%2)*14,300-h+j,10,10,'#ffd23f')});
+ r(0,300,W,100,'#3a2d52');r(0,320,W,80,'#2b2340');for(let x=-((t*300)%100);x<W;x+=100)r(x,372,50,6,'#f4efd8');
+ for(let x=-((t*200)%260);x<W;x+=260){r(x,200,6,100,'#1a1530');r(x-10,196,26,6,'#ffd23f')}
+ const b=Math.sin(t*14)*2;r(290,272+b,200,44,'#e5383b');r(330,238+b,120,38,'#e5383b');r(342,246+b,96,28,'#bfe3ff');r(388,246+b,4,28,'#e5383b');
+ [['#222',350],['#8a5a2b',376],['#222',404]].forEach(([h,x])=>{r(x,256+b,18,18,'#ffd1a6');r(x,252+b,18,6,h)});
+ [330,440].forEach(x=>{r(x,306+b,36,36,'#111');r(x+10,316+b,16,16,'#888')});r(488,285+b,8,10,'#fff3b0');
+}
+function city(t){
+ ['#1f1a4a','#4a3a8a','#c0527a','#ff9e7a'].forEach((c,i)=>r(0,i*85,W,85,c));for(let k=0;k<30;k++)if(Math.sin(t*2+k)>-.4)r(k*61%W,k*37%120,3,3,'#fff');
+ for(let i=0;i<9;i++){const x=i*92,h=120+(i*53%140);r(x,330-h,84,h,['#2d2a6e','#3b3480'][i%2]);for(let j=14;j<h-10;j+=26)for(let k=10;k<70;k+=24)if((i+j+k)%3)r(x+k,330-h+j,12,12,(i+j)%2?'#ffd23f':'#ff9ec7')}
+ r(0,330,W,70,'#2b2340');r(0,372,W,6,'#6c64a8');r(230,34,340,60,'#1a1530');r(236,40,328,48,'#2b2340');tx('THÀNH PHỐ MỚI',400,82,46,Math.sin(t*4)>-.3?'#5ef2ff':'#2a8a9a','center');
+ girl(230,GY-90,6,DADC,0);girl(340,GY-75,5,PL,0);girl(420,GY-90,6,MOMC,0);for(let i=0;i<4;i++)tx('♥',280+i*50,GY-130-((t*40+i*25)%60),34,'#ff6b8b','center');
+}
+function diner(t){
+ r(0,0,W,H,'#5a2a2a');r(0,300,W,100,'#c9915a');for(let x=0;x<W;x+=80)r(x,300,3,100,'#a8743f');
+ r(250,40,300,70,'#1a1530');tx('GÀ RÁN',400,95,60,Math.sin(t*4)>-.3?'#ffd23f':'#a88a22','center');
+ [[120,150],[640,150]].forEach(([x,y])=>{r(x,y,60,70,'#14204f');r(x+4,y+4,52,62,'#ff9e7a')});
+ girl(190,215,6,DADC,0);girl(370,225,5,PL,0);girl(540,215,6,MOMC,0);
+ r(150,290,500,24,'#8a5a2b');r(170,314,16,70,'#6b4423');r(614,314,16,70,'#6b4423');
+ r(350,230,100,62,'#f4efd8');for(let x=350;x<450;x+=20)r(x,230,10,62,'#e5383b');
+ [[360,214],[385,206],[410,212],[430,218]].forEach(([x,y])=>{r(x,y,22,18,'#d98a2b');r(x+4,y-4,14,6,'#b8651b');r(x+16,y+10,12,6,'#f4efd8')});
+ for(let i=0;i<3;i++)r(370+i*25+Math.sin(t*3+i)*4,190-((t*30+i*20)%50),6,6,'rgba(255,255,255,.5)');
+ for(let i=0;i<4;i++)tx('♥',250+i*100,180-((t*40+i*25)%60),34,'#ff6b8b','center');
+}
+function endSeq(i){const n=S.name,T=[`Bố mẹ ôm chặt ${n} vào lòng: "Con gái giỏi quá! Nhờ học toán giỏi và những món đồ thần kỳ mà con tìm được bố mẹ."`,`Cả nhà lên xe rời khỏi khu phố zombie. Phía chân trời, mặt trời mọc chiếu sáng một thành phố mới.`,`Thành phố mới thật yên bình. Bố cười: "Con đã vượt qua tất cả! Hôm nay bố mẹ dẫn con đi ăn gà rán nhé!"`,`Cả nhà ngồi quanh xô gà rán vàng giòn. ${n} mỉm cười: đây là ngày hạnh phúc nhất. Hành trình mới của cả nhà bắt đầu từ đây!`];
+ if(i>0){S.mode='end';S.es=i}say(T[i],i<3?'Tiếp':'Xem kết quả',()=>i<3?endSeq(i+1):showEnd())}
+function draw(t){cx.save();if(S.mode=='attack')cx.translate(R(-4,4),R(-4,4));
+ if(S.mode=='end')S.es==1?car(t):S.es==2?city(t):diner(t);
+ else if(S.mode=='story'&&scn<3)scn==0?room(t,0):scn==1?room(t,1):door(t);else world(t);cx.restore()}
+function update(dt){
+ S.flash=Math.max(0,S.flash-dt*1.5);S.pops=S.pops.filter(p=>(p.t+=dt)<1.2);
+ if(S.mode=='walk'){S.gx+=170*dt;if(S.gx>=S.tgt){S.gx=S.tgt;if(S.cp<10){S.mode='ask';msg('Zombie chắn đường! Trả lời đúng để nhận vật dụng và đánh zombie.');ask()}else{S.mode='win';S.wt=0;msg('Phía trước là trạm trú ẩn... có ai đó đang chạy ra!')}}}
+ else if(S.mode=='strike'){S.t+=dt;if(S.t>.45&&!S.hit){S.hit=1;seq([300,500],60);S.pops.push({x:CPX(S.cp)+30,txt:S.it.w,c:'#ffd23f',t:0})}if(S.t>1.4){S.zdead[S.cp]=1;S.cp++;S.mode='walk';S.tgt=S.cp<10?CPX(S.cp)-110:GOAL-60;msg(S.cp<10?`Chạy tới chặng ${S.cp+1}...`:'Đã thấy trạm trú ẩn!');hud()}}
+ else if(S.mode=='attack'){S.t+=dt;S.lunge=Math.min(1,S.t/.3);if(S.t>1.2){S.mode='ask';S.lunge=0;showFb()}}
+ else if(S.mode=='win'){S.wt+=dt;if(S.wt>1.8&&!S.ended){S.ended=1;endSeq(0)}}
+ S.cam+=(Math.max(0,Math.min(WW-W,S.gx-240))-S.cam)*Math.min(1,dt*6);
+}
+let last=0;function loop(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;update(dt);draw(ts/1000);requestAnimationFrame(loop)}
+
+/* ===== ÂM THANH, HUD, LỜI THOẠI ===== */
+function beep(f,d=.14){if(mute)return;try{AC=AC||new(window.AudioContext||webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=f;g.gain.value=.05;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+const seq=(a,ms)=>a.forEach((f,i)=>setTimeout(()=>beep(f),i*ms));
+$('#snd').onclick=e=>{mute=!mute;e.target.style.opacity=mute?.4:1};
+function hud(){$('#hH').innerHTML=[0,1,2].map(i=>`<span class="${i<S.hearts?'':'lost'}">♥</span>`).join('');
+ $('#hS').innerHTML=Array.from({length:10},(_,i)=>{const v=S.res[i];return `<span class="${v=='g'?'g':i==S.cp&&S.mode!='story'?'cur':''}">${v=='l'?'✕':v=='g'?IT[i].e:'·'}</span>`}).join('')+` ${S.stars}/10`}
+function msg(t){clearInterval(tw);$('#sayT').textContent=t;$('#sayB').hidden=true}
+function say(txt,label,cb){clearInterval(tw);const el=$('#sayT'),b=$('#sayB');el.textContent='';b.hidden=false;b.textContent=label;let i=0;tw=setInterval(()=>{el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(tw)},26);b.onclick=()=>{if(i<txt.length){clearInterval(tw);el.textContent=txt;i=txt.length}else cb()}}
+function story(i){const n=S.name,T=[`Sáng nay, ${n} tỉnh dậy khi trời còn chưa sáng hẳn. Căn nhà yên ắng đến lạ...`,`— Bố ơi! Mẹ ơi! Không ai trả lời. Giường bố mẹ lạnh ngắt, bữa sáng vẫn còn trên bàn. ${n} bắt đầu hoảng sợ.`,`${n} chạy ra mở cánh cửa lớn... và đứng chết lặng vì cảnh tượng bên ngoài.`,`Zombie đi lang thang khắp phố! ${n} phải ra khỏi nhà và tìm bố mẹ. May mắn là ${n} có phép màu: mỗi câu toán trả lời đúng sẽ biến ra một món ăn hoặc đồ dùng thần kỳ để đánh zombie!`];
+ scn=i;say(T[i],i<3?'Tiếp':'Xuất phát!',()=>i<3?story(i+1):begin())}
+function begin(){S.mode='walk';S.tgt=CPX(0)-110;hud();msg('Chạy tới chặng 1...')}
+
+/* ===== HỘP CÂU HỎI ===== */
+const show=v=>$('#modal').classList.toggle('hidden',!v);
+function ask(){S.q=GEN[S.cp]();renderQ()}
+function renderQ(){const q=S.q,a=$('#mA');$('#mHead').textContent=`Chặng ${S.cp+1}/10: ${NAMES[S.cp]}`;$('#mQ').innerHTML=fr(q.q);$('#mFb').innerHTML='';a.innerHTML='';
+ if(q.k=='c'){a.className='opts';q.opts.forEach(o=>{const b=document.createElement('button');b.className='opt';b.innerHTML=fr(o);b.onclick=()=>answer(o==q.ans,b);a.appendChild(b)})}
+ else{a.className='inrow';a.innerHTML=`<input id="ans" inputmode="decimal" autocomplete="off" aria-label="Đáp số"><span>${q.unit}</span><button class="px" id="go">Trả lời</button>`;
+  const f=()=>{const v=pv($('#ans').value.trim());if(isNaN(v)){$('#mFb').textContent='Hãy nhập một số (số thập phân dùng dấu phẩy).';return}answer(Math.abs(v-q.num)<1e-6)};
+  $('#go').onclick=f;$('#ans').onkeydown=e=>{if(e.key=='Enter')f()}}
+ show(1);const i=$('#ans');if(i)i.focus()}
+function answer(ok,btn){if(S.lock)return;S.lock=1;
+ if(ok){if(btn)btn.classList.add('ok');seq([523,659,784],110);const got=!S.wrong;S.res[S.cp]=got?'g':'l';if(got){S.stars++;S.inv.push(S.cp)}
+  $('#mFb').innerHTML=got?`<b class="g">Chính xác! Bạn nhận được: ${IT[S.cp].e} ${IT[S.cp].n}</b>`:'Đúng rồi! Nhưng vật dụng của chặng này đã bị zombie cướp vì lúc trước bạn trả lời sai.';hud();
+  setTimeout(pickWeapon,1300)}
+ else{if(btn)btn.classList.add('no');seq([200,150,100],120);S.wrong=true;S.hearts--;hud();setTimeout(()=>{show(0);S.lock=0;S.mode='attack';S.t=0;S.flash=1;S.pops.push({x:S.gx+30,txt:'-1 ♥',c:'#e5383b',t:0});msg('Zombie lao vào cắn!')},500)}}
+function pickWeapon(){S.lock=0;$('#mHead').textContent='Chọn vật dụng để đánh zombie!';$('#mQ').textContent='Bấm vào một vật dụng bạn đang có:';$('#mFb').innerHTML='';const a=$('#mA');a.className='opts';a.innerHTML='';
+ [...S.inv.slice().reverse().map(i=>IT[i]),FIST].forEach(it=>{const b=document.createElement('button');b.className='opt';b.innerHTML=`<span style="font-size:40px">${it.e}</span><br>${it.n}`;b.onclick=()=>{S.it=it;show(0);S.mode='strike';S.t=0;S.hit=0;msg(it.m)};a.appendChild(b)});show(1)}
+function showFb(){const dead=S.hearts<=0;$('#mHead').textContent=dead?'Zombie đã bắt được bạn!':'Zombie cắn bạn!';
+ const q=S.q,ans=q.k=='c'?q.ans:fx(q.num)+' '+q.unit;
+ $('#mQ').innerHTML=`Còn ${S.hearts} ♥. Hãy xem cách làm đúng nhé:<div class="guide"><b>Câu hỏi:</b> ${fr(q.q)}</div><div class="guide"><b>Cách làm:</b> ${fr(q.exp)}</div><div class="guide"><b>Đáp án đúng:</b> ${fr(ans)}</div>Nhớ cách này rồi thử câu mới nào!`;$('#mFb').innerHTML='';const a=$('#mA');a.className='';a.innerHTML=`<button class="px" id="nx">${dead?'Chạy lại từ chặng này':'Thử câu mới'}</button>`;
+ $('#nx').onclick=()=>{if(dead){S.hearts=3;S.wrong=false;hud()}ask()};show(1);$('#nx').focus()}
+function showEnd(){const s=S.stars,t=s==10?'Hoàn hảo! Bạn không để zombie cướp mất vật dụng nào.':s>=7?'Rất giỏi! Chỉ vài vật dụng bị zombie cướp.':'Bạn đã làm được! Chơi lại để giữ đủ 10 vật dụng nhé.';
+ $('#mHead').textContent='Hoàn thành hành trình!';$('#mQ').innerHTML=`${S.name} đã gặp lại bố mẹ, cả nhà sang thành phố mới và có một bữa gà rán thật ngon!<br><br>Vật dụng giữ được: <b style="color:var(--star)">${s}/10</b><br>${t}`;$('#mFb').innerHTML='';
+ const a=$('#mA');a.className='';a.innerHTML='<button class="px" id="again">Chơi lại</button>';$('#again').onclick=()=>{newGame();hud();show(0);$('#start').classList.remove('hidden');msg('')};show(1)}
+
+const GR=[['hair','Kiểu tóc',['Tóc ngắn','Tóc dài','Hai bím','Hai búi']],['hc','Màu tóc',HC],['skin','Màu da',SK],['eyes','Mắt',['Chấm tròn','Mắt to','Đeo kính']],['nose','Mũi',['Mũi nhỏ','Mũi to','Mũi hồng']],['mouth','Miệng',['Cười tươi','Miệng nhỏ','Ngạc nhiên']],['outfit','Quần áo',['Váy','Áo + quần','Áo dài']],['oc','Màu áo',OC]];
+function drawPreview(){const m=cx;cx=$('#pv').getContext('2d');cx.imageSmoothingEnabled=false;r(0,0,144,180,'#2e2757');girl(0,0,12,PL,0);cx=m}
+function buildCreator(){const box=$('#opts');box.innerHTML='';GR.forEach(([k,lb,list])=>{const g=document.createElement('div');g.className='grp';g.innerHTML=`<div class="lb">${lb}</div><div class="chips"></div>`;const ch=g.querySelector('.chips');
+ list.forEach((v,i)=>{const b=document.createElement('button');if(v[0]=='#'){b.className='sw';b.style.background=v;b.setAttribute('aria-label','Màu '+(i+1))}else b.textContent=v;if(PL[k]==i)b.classList.add('sel');
+  b.onclick=()=>{PL[k]=i;ch.querySelectorAll('button').forEach((x,j)=>x.classList.toggle('sel',j==i));drawPreview()};ch.appendChild(b)});box.appendChild(g)});drawPreview()}
+$('#rnd').onclick=()=>{GR.forEach(([k,,l])=>PL[k]=R(0,l.length-1));buildCreator()};
+$('#go0').onclick=()=>{$('#start').classList.add('hidden');$('#creator').classList.remove('hidden');buildCreator();beep(440)};
+$('#go1').onclick=()=>{S.name=$('#cname').value.trim()||'Mai';DADC.skin=MOMC.skin=PL.skin;$('#creator').classList.add('hidden');beep(440);hud();story(0)};
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+newGame();hud();msg('');requestAnimationFrame(loop);
+</script>
+</body>
+</html>
