@@ -45,6 +45,7 @@ button:focus-visible,input:focus-visible{outline:3px solid #fff;outline-offset:2
 #opts{flex:1;min-width:240px}.grp{margin:2px 0 8px}.grp .lb{color:var(--star);font-size:24px}
 .chips button{font-size:22px;background:#2c2859;color:var(--ink);border:3px solid #6c64a8;padding:1px 8px;margin:2px 4px 2px 0;box-shadow:2px 2px 0 #000}
 .chips button.sel{border-color:#fff;background:#4a3f8a}.chips button.sw{width:36px;height:30px;padding:0}.chips button.sw.sel{outline:3px solid #fff}
+.px.lock{opacity:.55}.hr{display:flex;gap:8px}.gsel button{font-size:30px!important;padding:4px 14px!important}
 h1{margin:0 0 6px;font-size:46px;color:var(--star);line-height:1}
 .card p{margin:8px 0}
 #nm{font:inherit;font-size:30px;width:6em;padding:4px 8px;background:#0f0c22;color:var(--ink);border:3px solid var(--star)}
@@ -53,8 +54,8 @@ h1{margin:0 0 6px;font-size:46px;color:var(--star);line-height:1}
 </head>
 <body>
 <div class="wrap">
-  <div class="hud"><div id="hH" aria-label="Số tim còn lại"></div><div id="hS" aria-label="Vật dụng đã nhận"></div><button class="px sm" id="snd" aria-label="Bật tắt âm thanh">♪</button></div>
-  <canvas id="cv" width="800" height="400" role="img" aria-label="Cô bé chạy qua phố đầy zombie để tìm bố mẹ"></canvas>
+  <div class="hud"><div id="hH" aria-label="Số tim còn lại"></div><div id="hS" aria-label="Vật dụng đã nhận"></div><span class="hr"><button class="px sm lock" id="sv" aria-label="Lưu game">💾</button><button class="px sm" id="snd" aria-label="Bật tắt âm thanh">♪</button></span></div>
+  <canvas id="cv" width="800" height="400" role="img" aria-label="Bé chạy qua phố đầy zombie để tìm bố mẹ"></canvas>
   <div class="dock"><div id="sayT"></div><button class="px" id="sayB" hidden></button></div>
 </div>
 
@@ -62,19 +63,20 @@ h1{margin:0 0 6px;font-size:46px;color:var(--star);line-height:1}
   <h1>Hành Trình Tìm Bố Mẹ</h1>
   <p>Trò chơi Toán lớp 5: Số thập phân, phân số, tỉ số phần trăm, hình học, vận tốc, thể tích.</p>
   <p>Mỗi chặng có một con zombie chắn đường. Trả lời <b style="color:var(--zom)">đúng</b>: nhận một món ăn hoặc đồ dùng Việt Nam, rồi <b>chọn vật dụng để đánh bay zombie</b>. Trả lời <b style="color:var(--bad)">sai</b>: zombie cắn, mất 1 ♥ (có 3 ♥) và vật dụng của chặng đó bị cướp mất.</p>
-  <button class="px" id="go0">Tạo nhân vật</button>
+  <p style="font-size:22px;color:#9d98c8">Lưu game được mở khóa sau khi chơi đủ 20 phút.</p>
+  <button class="px" id="go0">Chơi mới</button> <button class="px" id="cont" hidden></button>
 </div></div>
 
 <div class="modal hidden" id="creator"><div class="card" style="max-width:780px">
   <h1 style="font-size:38px">Tạo nhân vật</h1>
   <div class="cr"><div class="cl"><canvas id="pv" width="144" height="180"></canvas>
-    <p>Tên: <input id="cname" value="Mai" maxlength="12" aria-label="Tên cô bé"></p>
+    <p>Tên: <input id="cname" value="Mai" maxlength="12" aria-label="Tên của bé"></p>
     <button class="px sm" id="rnd">Ngẫu nhiên</button></div>
   <div id="opts"></div></div>
   <p><button class="px" id="go1">Bắt đầu hành trình</button></p>
 </div></div>
 <div class="modal hidden" id="modal"><div class="card" role="dialog" aria-live="polite">
-  <div id="mHead"></div><div id="mQ"></div><div id="mA"></div><div id="mFb"></div>
+  <div id="mHead"></div><div id="mQ"></div><div id="mA"></div><div id="mFb"></div><div style="text-align:right;margin-top:10px"><button class="px sm lock" id="sv2">💾</button></div>
 </div></div>
 
 <script>
@@ -90,7 +92,7 @@ const frs=(n,d)=>{const g=gcd(n,d);return d/g==1?''+n/g:(n/g)+'/'+(d/g)};
 const NAMES=['Hàng của số thập phân','So sánh số thập phân','Cộng, trừ số thập phân','Nhân, chia số thập phân','Cộng, trừ phân số','Tỉ số phần trăm','Hình tam giác, hình thang','Hình tròn','Vận tốc, quãng đường, thời gian','Thể tích hình hộp chữ nhật'];
 const IT=[
 {n:'Bánh mì',e:'🥖',a:'swing',w:'BỐP!',m:'Quất bánh mì cứng như gậy!'},
-{n:'Chảo',e:'🍳',a:'swing',w:'CHOANG!',m:'Cô bé vung chảo!'},
+{n:'Chảo',e:'🍳',a:'swing',w:'CHOANG!',m:'Bé vung chảo!'},
 {n:'Cây chổi',e:'🧹',a:'swing',w:'BỘP!',m:'Quét sạch zombie!'},
 {n:'Dép tông',e:'🩴',a:'swing',w:'CHÁT!',m:'Cú đập dép tông huyền thoại!'},
 {n:'Quả dừa',e:'🥥',a:'throw',w:'BỊCH!',m:'Ném dừa trúng đầu!'},
@@ -99,7 +101,7 @@ const IT=[
 {n:'Nước mắm',e:'🍾',a:'throw',w:'THỐI!',m:'Mùi nước mắm làm zombie ngất!'},
 {n:'Vỏ chuối',e:'🍌',a:'throw',w:'TRƯỢT!',m:'Zombie trượt vỏ chuối!'},
 {n:'Bánh chưng',e:'🟩',a:'throw',w:'ẦM!',m:'Ném bánh chưng cực nặng!'}],
-FIST={n:'Nắm đấm',e:'✊',a:'swing',w:'BỐP!',m:'Cô bé tung nắm đấm!'};
+FIST={n:'Nắm đấm',e:'✊',a:'swing',w:'BỐP!',m:'Bé tung nắm đấm!'};
 const C=(q,opts,ans,exp)=>({k:'c',q,opts:shuf(opts),ans,exp}),I=(q,num,unit,exp)=>({k:'i',q,num,unit,exp});
 const GEN=[
 ()=>{const d=shuf([1,2,3,4,5,6,7,8,9]),s=`${d[0]}${d[1]},${d[2]}${d[3]}${d[4]}`,k=R(0,2),N=['phần mười','phần trăm','phần nghìn'];
@@ -108,7 +110,7 @@ const GEN=[
  const so=a.slice().sort((x,y)=>pv(x)-pv(y)),mx=Math.random()<.5;
  return C(`Số nào ${mx?'lớn':'bé'} nhất trong các số: ${a.join('; ')}?`,a,mx?so[3]:so[0],`So sánh phần nguyên trước, nếu bằng nhau thì so sánh hàng phần mười, phần trăm, phần nghìn. Xếp từ bé đến lớn: ${so.join(' < ')}.`)},
 ()=>{let a=R(1000,9000),b=R(1000,6000);if(Math.random()<.5)return I(`Đoạn đường đầu dài ${f2(a)} km, đoạn sau dài ${f2(b)} km. Cả hai đoạn dài bao nhiêu ki-lô-mét?`,(a+b)/100,'km',`Đặt tính thẳng hàng dấu phẩy rồi cộng: ${f2(a)} + ${f2(b)} = ${fx((a+b)/100)} (km).`);
- return I(`Quãng đường dài ${f2(a)} km, cô bé đã chạy được ${f2(b)} km. Còn lại bao nhiêu ki-lô-mét?`,(a-b)/100,'km',`Đặt tính thẳng hàng dấu phẩy rồi trừ: ${f2(a)} − ${f2(b)} = ${fx((a-b)/100)} (km).`)},
+ return I(`Quãng đường dài ${f2(a)} km, bé đã chạy được ${f2(b)} km. Còn lại bao nhiêu ki-lô-mét?`,(a-b)/100,'km',`Đặt tính thẳng hàng dấu phẩy rồi trừ: ${f2(a)} − ${f2(b)} = ${fx((a-b)/100)} (km).`)},
 ()=>{const t=R(0,2);if(t==0){const A=R(12,99),m=R(2,9);return I(`Tính: ${f1(A)} × ${m} = ?`,A*m/10,'',`Nhân như số tự nhiên: ${A} × ${m} = ${A*m}, rồi đặt dấu phẩy ở kết quả sao cho có 1 chữ số ở phần thập phân: ${fx(A*m/10)}.`)}
  if(t==1){const q=R(11,99),d=R(2,9);return I(`Tính: ${f1(q*d)} : ${d} = ?`,q/10,'',`Chia như số tự nhiên: ${q*d} : ${d} = ${q}, đặt dấu phẩy ở thương để có 1 chữ số thập phân: ${fx(q/10)}.`)}
  const x=R(101,999),p=pick([10,100]);return I(`Tính: ${f2(x)} × ${p} = ?`,x*p/100,'',`Nhân với ${p}: chuyển dấu phẩy sang bên phải ${p==10?1:2} chữ số. Kết quả: ${fx(x*p/100)}.`)},
@@ -116,7 +118,7 @@ const GEN=[
  [frs(a+c,b+d),frs(a*k+(sub?c:-c),d),frs(n+1,d),frs(n,d+k),frs(Math.abs(a-c)||1,d)].forEach(x=>{if(x!=ans&&!/^-|^0/.test(x))S.add(x)});
  while(S.size<3){const x=frs(R(1,d),d+R(0,2));if(x!=ans&&x!='0')S.add(x)}
  return C(`Tính: ${a}/${b} ${sub?'−':'+'} ${c}/${d} = ?`,[ans,...[...S].slice(0,3)],ans,`Quy đồng mẫu số: ${a}/${b} = ${a*k}/${d}. Rồi ${sub?'trừ':'cộng'} tử số: ${a*k} ${sub?'−':'+'} ${c} = ${n}. Kết quả ${n}/${d}${ans!=n+'/'+d?' = '+ans:''}.`)},
-()=>{if(Math.random()<.5){const p=pick([10,20,25,40,50,5]),N=R(2,15)*20;return I(`Một con đường dài ${N} m. Cô bé đã chạy được ${p}% con đường. Hỏi cô bé đã chạy bao nhiêu mét?`,N*p/100,'m',`Tìm ${p}% của ${N}: ${N} × ${p} : 100 = ${fx(N*p/100)} (m).`)}
+()=>{if(Math.random()<.5){const p=pick([10,20,25,40,50,5]),N=R(2,15)*20;return I(`Một con đường dài ${N} m. Bé đã chạy được ${p}% con đường. Hỏi bé đã chạy bao nhiêu mét?`,N*p/100,'m',`Tìm ${p}% của ${N}: ${N} × ${p} : 100 = ${fx(N*p/100)} (m).`)}
  const T=pick([20,25,50]),p=R(1,T-1);return I(`Lớp 5A có ${T} học sinh, trong đó có ${p} bạn nữ. Số bạn nữ chiếm bao nhiêu phần trăm số học sinh cả lớp?`,p*100/T,'%',`Tỉ số của số nữ và cả lớp là ${p} : ${T} = ${fx(p/T)} = ${fx(p*100/T)}%.`)},
 ()=>{if(Math.random()<.5){const a=R(4,20);let h=R(4,20);if(a*h%2)h++;return I(`Mảnh vườn hình tam giác có đáy ${a} m, chiều cao ${h} m. Diện tích mảnh vườn là bao nhiêu mét vuông?`,a*h/2,'m²',`S = đáy × chiều cao : 2 = ${a} × ${h} : 2 = ${a*h/2} (m²).`)}
  const a=R(3,10),b=a+R(1,6),h=2*R(2,6);return I(`Một hình thang có đáy lớn ${b} cm, đáy bé ${a} cm, chiều cao ${h} cm. Tính diện tích hình thang.`,(a+b)*h/2,'cm²',`S = (đáy lớn + đáy bé) × chiều cao : 2 = (${b} + ${a}) × ${h} : 2 = ${(a+b)*h/2} (cm²).`)},
@@ -141,13 +143,18 @@ const HAIR=[
 [...TOP,[".hh","ssssss","hh."],[".hh","ssssss","hh."],[".hh","ssssss","hh."],[".hh","hssssh","hh."]],
 [...TOP,[".hs","ssssss","sh."],["hhs","ssssss","shh"],["hh.","ssssss",".hh"],["hh.",".ssss.",".hh"]],
 [["hh.","hhhhhh",".hh"],["hh.","hhhhhh",".hh"],[".hh","hhhhhh","hh."],[".hs","ssssss","sh."],["..s","ssssss","s.."],["..s","ssssss","s.."],["...",".ssss.","..."]]];
+HAIR.push(
+ [["...",".hhhh.","..."],["..h","hhhhhh","h.."],["..h","hhhhhh","h.."],["..s","ssssss","s.."],["..s","ssssss","s.."],["...","ssssss","..."],["...",".ssss.","..."]],
+ [["...","h.hh.h","..."],[".hh","hhhhhh","hh."],["..h","hhhhhh","h.."],["..s","ssssss","s.."],["..s","ssssss","s.."],["...","ssssss","..."],["...",".ssss.","..."]],
+ [["...",".hhhhh","..."],["..h","hhhhhh","hh."],["..h","hhshhh","h.."],["..s","ssssss","s.."],["..s","ssssss","s.."],["...","ssssss","..."],["...",".ssss.","..."]]);
 const EY=['sesses','eessee','geggeg'],NS=['sssnss','snnnns','ssnnss'],MO=['smmmms','ssmmss','ssooss'];
 const OUT=[
 {rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..rrrrrrrr..",".rrrrrrrrrr."],leg:'s',p:'#000'},
 {rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..pppppppp..","..ppp..ppp.."],leg:'p',p:'#2b3a67'},
 {rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..rrrrrrrr..","..rrr..rrr.."],leg:'p',p:'#f4efd8'}];
+OUT.push({rows:[".rrrrrrrrrr.","ssrrrrrrrrss","s.rrrrrrrr.s","..pppppppp..","..ppp..ppp.."],leg:'s',p:'#3b6b9a'},{rows:[".rrrrrrrrrr.","rrrrrrrrrrrr","r.rrrrrrrr.r","..pppppppp..","..ppp..ppp.."],leg:'p',p:'#222'});
 const dk=h=>'#'+[1,3,5].map(i=>Math.round(parseInt(h.substr(i,2),16)*.82).toString(16).padStart(2,'0')).join('');
-const PL={hair:0,hc:0,skin:0,eyes:0,nose:0,mouth:1,outfit:0,oc:0},DADC={hair:0,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:1,oc:1},MOMC={hair:1,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:2,oc:4};
+const PL={g:'f',hair:0,hc:0,skin:0,eyes:0,nose:0,mouth:1,outfit:0,oc:0},DADC={hair:4,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:1,oc:1},MOMC={hair:1,hc:1,skin:0,eyes:0,nose:0,mouth:0,outfit:2,oc:4};
 const BC={};
 function build(c,f){const key=[c.hair,c.hc,c.skin,c.eyes,c.nose,c.mouth,c.outfit,c.oc,f].join();if(BC[key])return BC[key];
  const rows=HAIR[c.hair].map(x=>x.join('').split(''));
@@ -169,7 +176,7 @@ const CPX=i=>420+i*430,GOAL=CPX(9)+620,WW=GOAL+420,GY=335,SC=5;
 const BG=(()=>{let s=7;const q=()=>(s=s*16807%2147483647)/2147483647,a=[];let x=0;while(x<WW*.5+W){const w=60+q()*90|0;a.push({x,w,h:100+q()*170|0});x+=w+q()*30|0}return a})();
 const DZ=Array.from({length:12},(_,i)=>({x:CPX(i%10)+160+(i*53%120),f:i%2}));
 let S,scn=0,tw,mute=false,AC;
-function newGame(){S={mode:'story',cp:0,gx:90,tgt:0,hearts:3,stars:0,res:[],wrong:false,t:0,lunge:0,flash:0,jump:0,pops:[],wt:0,cam:0,q:null,name:'Mai',lock:0,inv:[],zdead:[],hit:0};scn=0}
+function newGame(){S={mode:'story',cp:0,gx:90,tgt:0,hearts:3,stars:0,res:[],wrong:false,t:0,lunge:0,flash:0,jump:0,pops:[],wt:0,cam:0,q:null,name:'Mai',lock:0,inv:[],zdead:[],hit:0,play:0,on:false,ps:-1};scn=0}
 
 function room(t,awake){
  r(0,0,W,H,'#2e2757');r(0,310,W,90,'#4a3a63');r(0,306,W,6,'#3a2d52');for(let x=0;x<W;x+=100)r(x,312,3,88,'#3a2d52');
@@ -229,14 +236,15 @@ function diner(t){
  for(let i=0;i<3;i++)r(370+i*25+Math.sin(t*3+i)*4,190-((t*30+i*20)%50),6,6,'rgba(255,255,255,.5)');
  for(let i=0;i<4;i++)tx('♥',250+i*100,180-((t*40+i*25)%60),34,'#ff6b8b','center');
 }
-function endSeq(i){const n=S.name,T=[`Bố mẹ ôm chặt ${n} vào lòng: "Con gái giỏi quá! Nhờ học toán giỏi và những món đồ thần kỳ mà con tìm được bố mẹ."`,`Cả nhà lên xe rời khỏi khu phố zombie. Phía chân trời, mặt trời mọc chiếu sáng một thành phố mới.`,`Thành phố mới thật yên bình. Bố cười: "Con đã vượt qua tất cả! Hôm nay bố mẹ dẫn con đi ăn gà rán nhé!"`,`Cả nhà ngồi quanh xô gà rán vàng giòn. ${n} mỉm cười: đây là ngày hạnh phúc nhất. Hành trình mới của cả nhà bắt đầu từ đây!`];
- if(i>0){S.mode='end';S.es=i}say(T[i],i<3?'Tiếp':'Xem kết quả',()=>i<3?endSeq(i+1):showEnd())}
+function endSeq(i){const n=S.name,k=PL.g=='m'?'trai':'gái',T=[`${n} chạy ào vào vòng tay bố mẹ, nước mắt rơi: "Bố mẹ ơi, con sợ mất bố mẹ lắm! Con yêu bố mẹ rất nhiều! Con sẽ cố gắng ngoan và học giỏi!"`,`Bố mẹ ôm chặt ${n} vào lòng: "Bố mẹ cũng yêu con nhiều lắm! Con ${k} giỏi quá! Nhờ học toán giỏi và những món đồ thần kỳ mà con tìm được bố mẹ. Bố mẹ luôn ở bên con."`,`Cả nhà lên xe rời khỏi khu phố zombie. Phía chân trời, mặt trời mọc chiếu sáng một thành phố mới.`,`Thành phố mới thật yên bình. Bố cười: "Con đã vượt qua tất cả! Hôm nay bố mẹ dẫn con đi ăn gà rán nhé!"`,`Cả nhà ngồi quanh xô gà rán vàng giòn. ${n} mỉm cười: đây là ngày hạnh phúc nhất. Hành trình mới của cả nhà bắt đầu từ đây!`];
+ if(i>=2){S.mode='end';S.es=i-1}say(T[i],i<4?'Tiếp':'Xem kết quả',()=>i<4?endSeq(i+1):showEnd())}
 function draw(t){cx.save();if(S.mode=='attack')cx.translate(R(-4,4),R(-4,4));
  if(S.mode=='end')S.es==1?car(t):S.es==2?city(t):diner(t);
  else if(S.mode=='story'&&scn<3)scn==0?room(t,0):scn==1?room(t,1):door(t);else world(t);cx.restore()}
 function update(dt){
+ if(S.on&&S.mode!='story'&&S.mode!='win'&&S.mode!='end'){S.play+=dt;const sc=Math.floor(S.play);if(sc!==S.ps){S.ps=sc;svLabel()}}
  S.flash=Math.max(0,S.flash-dt*1.5);S.pops=S.pops.filter(p=>(p.t+=dt)<1.2);
- if(S.mode=='walk'){S.gx+=170*dt;if(S.gx>=S.tgt){S.gx=S.tgt;if(S.cp<10){S.mode='ask';msg('Zombie chắn đường! Trả lời đúng để nhận vật dụng và đánh zombie.');ask()}else{S.mode='win';S.wt=0;msg('Phía trước là trạm trú ẩn... có ai đó đang chạy ra!')}}}
+ if(S.mode=='walk'){S.gx+=170*dt;if(S.gx>=S.tgt){S.gx=S.tgt;if(S.cp<10){S.mode='ask';msg('Zombie chắn đường! Trả lời đúng để nhận vật dụng và đánh zombie.');ask()}else{S.mode='win';S.on=false;S.wt=0;msg('Phía trước là trạm trú ẩn... có ai đó đang chạy ra!')}}}
  else if(S.mode=='strike'){S.t+=dt;if(S.t>.45&&!S.hit){S.hit=1;seq([300,500],60);S.pops.push({x:CPX(S.cp)+30,txt:S.it.w,c:'#ffd23f',t:0})}if(S.t>1.4){S.zdead[S.cp]=1;S.cp++;S.mode='walk';S.tgt=S.cp<10?CPX(S.cp)-110:GOAL-60;msg(S.cp<10?`Chạy tới chặng ${S.cp+1}...`:'Đã thấy trạm trú ẩn!');hud()}}
  else if(S.mode=='attack'){S.t+=dt;S.lunge=Math.min(1,S.t/.3);if(S.t>1.2){S.mode='ask';S.lunge=0;showFb()}}
  else if(S.mode=='win'){S.wt+=dt;if(S.wt>1.8&&!S.ended){S.ended=1;endSeq(0)}}
@@ -254,7 +262,7 @@ function msg(t){clearInterval(tw);$('#sayT').textContent=t;$('#sayB').hidden=tru
 function say(txt,label,cb){clearInterval(tw);const el=$('#sayT'),b=$('#sayB');el.textContent='';b.hidden=false;b.textContent=label;let i=0;tw=setInterval(()=>{el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(tw)},26);b.onclick=()=>{if(i<txt.length){clearInterval(tw);el.textContent=txt;i=txt.length}else cb()}}
 function story(i){const n=S.name,T=[`Sáng nay, ${n} tỉnh dậy khi trời còn chưa sáng hẳn. Căn nhà yên ắng đến lạ...`,`— Bố ơi! Mẹ ơi! Không ai trả lời. Giường bố mẹ lạnh ngắt, bữa sáng vẫn còn trên bàn. ${n} bắt đầu hoảng sợ.`,`${n} chạy ra mở cánh cửa lớn... và đứng chết lặng vì cảnh tượng bên ngoài.`,`Zombie đi lang thang khắp phố! ${n} phải ra khỏi nhà và tìm bố mẹ. May mắn là ${n} có phép màu: mỗi câu toán trả lời đúng sẽ biến ra một món ăn hoặc đồ dùng thần kỳ để đánh zombie!`];
  scn=i;say(T[i],i<3?'Tiếp':'Xuất phát!',()=>i<3?story(i+1):begin())}
-function begin(){S.mode='walk';S.tgt=CPX(0)-110;hud();msg('Chạy tới chặng 1...')}
+function begin(){S.on=true;svLabel();S.mode='walk';S.tgt=CPX(0)-110;hud();msg('Chạy tới chặng 1...')}
 
 /* ===== HỘP CÂU HỎI ===== */
 const show=v=>$('#modal').classList.toggle('hidden',!v);
@@ -276,20 +284,45 @@ function showFb(){const dead=S.hearts<=0;$('#mHead').textContent=dead?'Zombie đ
  const q=S.q,ans=q.k=='c'?q.ans:fx(q.num)+' '+q.unit;
  $('#mQ').innerHTML=`Còn ${S.hearts} ♥. Hãy xem cách làm đúng nhé:<div class="guide"><b>Câu hỏi:</b> ${fr(q.q)}</div><div class="guide"><b>Cách làm:</b> ${fr(q.exp)}</div><div class="guide"><b>Đáp án đúng:</b> ${fr(ans)}</div>Nhớ cách này rồi thử câu mới nào!`;$('#mFb').innerHTML='';const a=$('#mA');a.className='';a.innerHTML=`<button class="px" id="nx">${dead?'Chạy lại từ chặng này':'Thử câu mới'}</button>`;
  $('#nx').onclick=()=>{if(dead){S.hearts=3;S.wrong=false;hud()}ask()};show(1);$('#nx').focus()}
-function showEnd(){const s=S.stars,t=s==10?'Hoàn hảo! Bạn không để zombie cướp mất vật dụng nào.':s>=7?'Rất giỏi! Chỉ vài vật dụng bị zombie cướp.':'Bạn đã làm được! Chơi lại để giữ đủ 10 vật dụng nhé.';
+function showEnd(){try{localStorage.removeItem(SAVEK)}catch(e){}const s=S.stars,t=s==10?'Hoàn hảo! Bạn không để zombie cướp mất vật dụng nào.':s>=7?'Rất giỏi! Chỉ vài vật dụng bị zombie cướp.':'Bạn đã làm được! Chơi lại để giữ đủ 10 vật dụng nhé.';
  $('#mHead').textContent='Hoàn thành hành trình!';$('#mQ').innerHTML=`${S.name} đã gặp lại bố mẹ, cả nhà sang thành phố mới và có một bữa gà rán thật ngon!<br><br>Vật dụng giữ được: <b style="color:var(--star)">${s}/10</b><br>${t}`;$('#mFb').innerHTML='';
- const a=$('#mA');a.className='';a.innerHTML='<button class="px" id="again">Chơi lại</button>';$('#again').onclick=()=>{newGame();hud();show(0);$('#start').classList.remove('hidden');msg('')};show(1)}
+ const a=$('#mA');a.className='';a.innerHTML='<button class="px" id="again">Chơi lại</button>';$('#again').onclick=()=>{newGame();hud();svLabel();$('#cont').hidden=true;show(0);$('#start').classList.remove('hidden');msg('')};show(1)}
 
-const GR=[['hair','Kiểu tóc',['Tóc ngắn','Tóc dài','Hai bím','Hai búi']],['hc','Màu tóc',HC],['skin','Màu da',SK],['eyes','Mắt',['Chấm tròn','Mắt to','Đeo kính']],['nose','Mũi',['Mũi nhỏ','Mũi to','Mũi hồng']],['mouth','Miệng',['Cười tươi','Miệng nhỏ','Ngạc nhiên']],['outfit','Quần áo',['Váy','Áo + quần','Áo dài']],['oc','Màu áo',OC]];
+/* ===== LƯU GAME (mở khóa sau 20 phút chơi) ===== */
+const SAVEK='ttbm_save_v1',LOCK=1200;
+const fmt=x=>{x=Math.max(0,Math.ceil(x));return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')};
+function svLabel(){const open=S.play>=LOCK,t=open?'💾 Lưu':'💾 '+fmt(LOCK-S.play);['#sv','#sv2'].forEach(q=>{const b=$(q);b.textContent=t;b.classList.toggle('lock',!open)})}
+function note(m){if($('#modal').classList.contains('hidden'))msg(m);else $('#mFb').textContent=m}
+function trySave(){
+ if(!S.on){note('Hãy bắt đầu chơi rồi mới lưu game nhé.');return}
+ if(S.play<LOCK){note('Chơi đủ 20 phút mới được lưu game. Còn '+fmt(LOCK-S.play)+' nữa!');return}
+ try{localStorage.setItem(SAVEK,JSON.stringify({v:1,PL,name:S.name,cp:S.cp,hearts:S.hearts,stars:S.stars,res:Array.from({length:10},(_,i)=>S.res[i]||null),zdead:Array.from({length:10},(_,i)=>S.zdead[i]||0),inv:S.inv,play:S.play}));beep(660);note('Đã lưu game! Lần sau chọn "Tiếp tục" để chơi tiếp từ chặng '+Math.min(S.cp+1,10)+'.')}
+ catch(e){note('Không lưu được trên trình duyệt này.')}}
+function readSave(){try{const d=JSON.parse(localStorage.getItem(SAVEK));return d&&d.v==1?d:null}catch(e){return null}}
+function resume(d){Object.assign(PL,d.PL);DADC.skin=MOMC.skin=PL.skin;newGame();Object.assign(S,{name:d.name,cp:d.cp,hearts:d.hearts,stars:d.stars,res:d.res,zdead:d.zdead,inv:d.inv,play:d.play,on:true,mode:'walk'});
+ S.tgt=S.cp<10?CPX(S.cp)-110:GOAL-60;S.gx=Math.max(90,S.tgt-260);S.cam=Math.max(0,Math.min(WW-W,S.gx-240));
+ $('#start').classList.add('hidden');hud();svLabel();msg('Tiếp tục hành trình từ chặng '+Math.min(S.cp+1,10)+'...')}
+
+/* ===== TẠO NHÂN VẬT ===== */
+const GN={f:'Mai',m:'Nam'};
+const HAIRO={f:[['Tóc ngắn',0],['Tóc dài',1],['Hai bím',2],['Hai búi',3]],m:[['Húi cua',4],['Tóc dựng',5],['Rẽ ngôi',6]]},OUTO={f:[['Váy',0],['Áo + quần',1],['Áo dài',2]],m:[['Áo + quần',1],['Quần đùi',3],['Áo khoác',4]]};
+const GR=()=>[['hair','Kiểu tóc',HAIRO[PL.g]],['hc','Màu tóc',HC],['skin','Màu da',SK],['eyes','Mắt',['Chấm tròn','Mắt to','Đeo kính']],['nose','Mũi',['Mũi nhỏ','Mũi to','Mũi hồng']],['mouth','Miệng',['Cười tươi','Miệng nhỏ','Ngạc nhiên']],['outfit','Quần áo',OUTO[PL.g]],['oc','Màu áo',OC]];
 function drawPreview(){const m=cx;cx=$('#pv').getContext('2d');cx.imageSmoothingEnabled=false;r(0,0,144,180,'#2e2757');girl(0,0,12,PL,0);cx=m}
-function buildCreator(){const box=$('#opts');box.innerHTML='';GR.forEach(([k,lb,list])=>{const g=document.createElement('div');g.className='grp';g.innerHTML=`<div class="lb">${lb}</div><div class="chips"></div>`;const ch=g.querySelector('.chips');
- list.forEach((v,i)=>{const b=document.createElement('button');if(v[0]=='#'){b.className='sw';b.style.background=v;b.setAttribute('aria-label','Màu '+(i+1))}else b.textContent=v;if(PL[k]==i)b.classList.add('sel');
-  b.onclick=()=>{PL[k]=i;ch.querySelectorAll('button').forEach((x,j)=>x.classList.toggle('sel',j==i));drawPreview()};ch.appendChild(b)});box.appendChild(g)});drawPreview()}
-$('#rnd').onclick=()=>{GR.forEach(([k,,l])=>PL[k]=R(0,l.length-1));buildCreator()};
+function setGender(g){const old=PL.g;PL.g=g;PL.hair=HAIRO[g][0][1];PL.outfit=OUTO[g][0][1];PL.oc=g=='m'?1:0;const nm=$('#cname');if(nm.value==GN[old]||!nm.value.trim())nm.value=GN[g];buildCreator()}
+function buildCreator(){const box=$('#opts');box.innerHTML='';
+ const gg=document.createElement('div');gg.className='grp';gg.innerHTML='<div class="lb">Bạn là</div><div class="chips gsel"></div>';
+ [['f','👧 Bé gái'],['m','👦 Bé trai']].forEach(([g,l])=>{const b=document.createElement('button');b.textContent=l;if(PL.g==g)b.classList.add('sel');b.onclick=()=>{if(PL.g!=g)setGender(g)};gg.querySelector('.chips').appendChild(b)});box.appendChild(gg);
+ GR().forEach(([k,lb,list])=>{const g=document.createElement('div');g.className='grp';g.innerHTML=`<div class="lb">${lb}</div><div class="chips"></div>`;const ch=g.querySelector('.chips');
+  list.forEach((e,i)=>{const pair=Array.isArray(e),val=pair?e[1]:i,v=pair?e[0]:e,b=document.createElement('button');if(v[0]=='#'){b.className='sw';b.style.background=v;b.setAttribute('aria-label','Màu '+(i+1))}else b.textContent=v;if(PL[k]==val)b.classList.add('sel');
+   b.onclick=()=>{PL[k]=val;ch.querySelectorAll('button').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');drawPreview()};ch.appendChild(b)});box.appendChild(g)});drawPreview()}
+$('#rnd').onclick=()=>{GR().forEach(([k,,l])=>{PL[k]=pick(l.map((x,i)=>Array.isArray(x)?x[1]:i))});buildCreator()};
 $('#go0').onclick=()=>{$('#start').classList.add('hidden');$('#creator').classList.remove('hidden');buildCreator();beep(440)};
-$('#go1').onclick=()=>{S.name=$('#cname').value.trim()||'Mai';DADC.skin=MOMC.skin=PL.skin;$('#creator').classList.add('hidden');beep(440);hud();story(0)};
+$('#go1').onclick=()=>{S.name=$('#cname').value.trim()||GN[PL.g];DADC.skin=MOMC.skin=PL.skin;$('#creator').classList.add('hidden');beep(440);hud();story(0)};
+$('#sv').onclick=trySave;$('#sv2').onclick=trySave;
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-newGame();hud();msg('');requestAnimationFrame(loop);
+newGame();hud();svLabel();msg('');
+const SV0=readSave();if(SV0){const c=$('#cont');c.hidden=false;c.textContent='Tiếp tục (chặng '+Math.min(SV0.cp+1,10)+'/10)';c.onclick=()=>{beep(440);resume(readSave())}}
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
