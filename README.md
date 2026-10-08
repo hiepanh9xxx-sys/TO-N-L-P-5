@@ -1,13 +1,13 @@
 # Hành Trình Tìm Bố Mẹ – Game Toán lớp 5
 
-Game pixel: cô bé chạy qua 10 chặng toán, nhận món ăn/đồ dùng Việt Nam để đánh zombie và tìm bố mẹ.
+Game pixel: cô bé chạy qua 35 bài toán (Toán 5 Kết nối tri thức, Tập một, 6 chủ đề), nhận món ăn/đồ dùng Việt Nam để đánh zombie và tìm bố mẹ.
 
 ## Đưa lên GitHub Pages (không cần cài gì, làm trên trình duyệt)
 
 1. Đăng nhập github.com, bấm dấu **+** ở góc phải trên, chọn **New repository**.
 2. Đặt tên repository, ví dụ `tim-bo-me`. Chọn **Public**. Bấm **Create repository**.
 3. Ở trang repository mới, bấm **uploading an existing file**.
-4. Giải nén file zip, mở thư mục, chọn **tất cả file và thư mục bên trong** (`index.html`, `manifest.webmanifest`, `sw.js`, `.nojekyll`, thư mục `icons`) rồi kéo thả vào trang GitHub. Thư mục `icons` phải được tải lên cùng các file bên trong.
+4. Giải nén file zip, mở thư mục, chọn **tất cả file bên trong** (`index.html`, `manifest.webmanifest`, `sw.js`, `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png`, `.nojekyll`) rồi kéo thả vào trang GitHub. Tất cả file nằm cùng một cấp, không có thư mục con.
    Nếu máy không hiện file `.nojekyll` (file ẩn), có thể bỏ qua, game vẫn chạy.
 5. Kéo xuống, bấm **Commit changes**.
 6. Vào **Settings** → **Pages**. Ở mục **Build and deployment**, chọn **Source: Deploy from a branch**, **Branch: main**, thư mục **/ (root)**, rồi bấm **Save**.
@@ -22,4 +22,10 @@ Game pixel: cô bé chạy qua 10 chặng toán, nhận món ăn/đồ dùng Vi�
 
 ## Cập nhật game về sau
 
-Tải lại các file mới lên repository (bấm **Add file** → **Upload files**, ghi đè file cũ). Nếu điện thoại vẫn hiện bản cũ, đổi `tim-bo-me-v1` trong `sw.js` thành `tim-bo-me-v2` rồi tải lên.
+Tải lại các file mới lên repository (bấm **Add file** → **Upload files**, ghi đè file cũ). Nếu điện thoại vẫn hiện bản cũ, đổi `tim-bo-me-v4` trong `sw.js` thành `tim-bo-me-v5` rồi tải lên.
+
+## Nếu biểu tượng không hiện trên điện thoại
+
+1. Kiểm tra trong repository trên GitHub có đủ các file `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, `apple-touch-icon.png` (nếu thiếu, tải lên bổ sung).
+2. Xóa biểu tượng cũ trên màn hình chính, đóng hẳn Chrome, mở lại link GitHub Pages (không phải link claude.ai) và đợi tải xong.
+3. Bấm menu ⋮ → **Thêm vào màn hình chính** → **Cài đặt**. Biểu tượng cũ có thể bị Android giữ lại trong bộ nhớ đệm nên cần xóa và thêm lại.
